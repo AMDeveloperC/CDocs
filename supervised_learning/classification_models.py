@@ -14,19 +14,27 @@ class Classification:
     def __del__(self):
         pass
 
-    def predict_and_analyse(self, solver):
+    def train_logistic(self, solver):
         self.lr_model = LogisticRegression(solver = solver)
         self.lr_model.fit(self.x_train, self.y_train)
-        self.prediction = self.lr_model.predict(self.x_test)
-        pprint.pprint(metrics.confusion_matrix(self.y_test, self.prediction))
-        pprint.pprint(metrics.classification_report(self.y_test, self.prediction))
+        return self.lr_model
 
-    def predict_svc(self):
+    def predict_logistic(self):
+        self.prediction = self.lr_model.predict(self.x_test)
+        print(self.prediction)
+
+    def train_svc(self):
         self.svc = SVC(gamma = 'auto')
         self.svc.fit(self.x_train, self.y_train)
-        self.prediction = self.svc.predict(self.x_test)
+        return self.svc
+
+    def predict_svc(self, unseen_doc):
+        self.prediction = self.svc.predict(unseen_doc)
+        print(self.prediction)
+
+    def print_metrix(self):
         pprint.pprint(metrics.confusion_matrix(self.y_test, self.prediction))
-        #pprint.pprint(metrics.classification_report(self.y_test, self.prediction))
+        pprint.pprint(metrics.classification_report(self.y_test, self.prediction))
 
     def save_classification_results(self, outout_file_name):
         with open(outout_file_name) as handler_file:
@@ -34,5 +42,5 @@ class Classification:
                 handler_file.write(row)
                 handler_file.write("\n")
 
-    def save_accuracy(self):
+    def print_accuracy(self):
         pprint.pprint(metrics.accuracy_score(self.y_test, self.prediction))

@@ -6,11 +6,6 @@ from collections import defaultdict
 import codecs
 import pprint
 
-# https://radimrehurek.com/gensim/corpora/dictionary.html
-# https://radimrehurek.com/gensim/auto_examples/core/run_similarity_queries.html
-# https://www.datacamp.com/tutorial/discovering-hidden-topics-python
-# https://goodboychan.github.io/python/datacamp/natural_language_processing/2020/07/17/04-TF-IDF-and-similarity-scores.html
-
 class PreProcessor:
     def __del__(self):
         pass
@@ -105,7 +100,17 @@ class PreProcessor:
         self.texts = [[token for token in text if len(token) > 3] for text in self.texts]
 
     def preprocessing(self):
+        """
+        Purpose: executes preprocessing phase on the input documents
+        Output : a list of cleaned and vectorized documents
+        """
         self.remove_words_only_once_appearing()
         self.stop_words_removal_and_stemming()
         self.remove_shortest_words()
         return self.texts
+    
+    def clear(self):
+        self.documents_file_names.clear()
+        self.documents_words_list.clear()
+        self.texts.clear()
+        self.labels.clear()
