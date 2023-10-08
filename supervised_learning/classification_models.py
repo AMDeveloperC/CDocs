@@ -1,5 +1,6 @@
 from supervised_learning.supervised_learning import SupervisedLearning
 from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import GaussianNB
 from sklearn import metrics
 from sklearn.svm import SVC
 import pprint
@@ -14,23 +15,38 @@ class Classification:
     def __del__(self):
         pass
 
-    def train_logistic(self, solver):
+    def train_logistic(self, solver = 'lbfgs', unseen_docs = None):
+        if (unseen_docs is None):
+            unseen_docs = self.x_test
         self.lr_model = LogisticRegression(solver = solver)
-        self.lr_model.fit(self.x_train, self.y_train)
-        return self.lr_model
-
-    def predict_logistic(self):
-        self.prediction = self.lr_model.predict(self.x_test)
+        self.prediction = self.lr_model.fit(self.x_train, self.y_train).predict(unseen_docs)
+        print("Real labels: ");
+        print(unseen_docs)
+        print("Predicted labels: ")
         print(self.prediction)
+        print("Misclassificated documents: " + str((self.y_test != self.prediction).sum()))
 
-    def train_svc(self):
+    def train_svc(self, unseen_docs = None):
+        if (unseen_docs is None):
+            unseen_docs = self.x_test
         self.svc = SVC(gamma = 'auto')
-        self.svc.fit(self.x_train, self.y_train)
-        return self.svc
-
-    def predict_svc(self, unseen_doc):
-        self.prediction = self.svc.predict(unseen_doc)
+        self.prediction = self.svc.fit(self.x_train, self.y_train).predict(unseen_docs)
+        print("Real labels: ");
+        print(unseen_docs)
+        print("Predicted labels: ")
         print(self.prediction)
+        print("Misclassificated documents: " + str((self.y_test != self.prediction).sum()))
+
+    def train_and_predict_naive_bayes(self, unseen_docs = None):
+        if (unseen_docs is None):
+            unseen_docs = self.x_test
+        self.gnb = GaussianNB()
+        self.prediction = self.gnb.fit(self.x_train, self.y_train).predict(unseen_docs)
+        print("Real labels: ");
+        print(unseen_docs)
+        print("Predicted labels: ")
+        print(self.prediction)
+        print("Misclassificated documents: " + str((self.y_test != self.prediction).sum()))
 
     def print_metrix(self):
         pprint.pprint(metrics.confusion_matrix(self.y_test, self.prediction))
